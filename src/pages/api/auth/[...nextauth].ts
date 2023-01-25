@@ -14,15 +14,15 @@ export const authOptions: NextAuthOptions = {
         session.user.id = user.id;
       }
       return session;
-    },
+    }
   },
   // Configure one or more authentication providers
   adapter: PrismaAdapter(prisma),
   providers: [
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
+      clientSecret: env.DISCORD_CLIENT_SECRET
+    })
     /**
      * ...add more providers here
      *
@@ -32,7 +32,7 @@ export const authOptions: NextAuthOptions = {
      * NextAuth.js docs for the provider you want to use. Example:
      * @see https://next-auth.js.org/providers/github
      */
-  ],
+  ]
 };
 
 export default NextAuth(authOptions);
