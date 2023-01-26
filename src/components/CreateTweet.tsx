@@ -21,7 +21,7 @@ const CreateTweet: FunctionComponent = (): JSX.Element => {
     event.preventDefault();
 
     try {
-      tweetSchema.parse({ text })
+      tweetSchema.parse({ text });
     } catch (error) {
       setError((error as Error).message);
       return;
@@ -33,13 +33,24 @@ const CreateTweet: FunctionComponent = (): JSX.Element => {
   return (
     <>
       {error && JSON.stringify(error)}
-      <form onSubmit={void handleSubmit}>
-        <textarea onChange={(event) => setText(event.target.value)} value={text} />
-        <div>
-          <button type="submit">Tweet</button>
+      <form
+        onSubmit={void handleSubmit}
+        className="w-full flex flex-col border-2 p-4 rounded-md mb-4"
+      >
+        <textarea
+          onChange={(event) => setText(event.target.value)}
+          value={text}
+          className="shadow p-4 w-full"
+        />
+        <div className="mt-4 flex justify-end">
+          <button
+            type="submit"
+            className="bg-primary text-white px-4 py-2 rounded-md"
+          >
+            Tweet
+          </button>
         </div>
       </form>
-
     </>
   );
 };
