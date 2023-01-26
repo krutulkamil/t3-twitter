@@ -34,6 +34,8 @@ export const tweetRouter = createTRPCRouter({
       const { prisma } = ctx;
       const { cursor, limit } = input;
 
+      const userId = ctx.session?.user?.id;
+
       const tweets = await prisma.tweet.findMany({
         take: limit + 1,
         orderBy: [
@@ -43,6 +45,14 @@ export const tweetRouter = createTRPCRouter({
         ],
         cursor: cursor ? { id: cursor } : undefined,
         include: {
+          likes: {
+            where: {
+              userId
+            },
+            select: {
+              userId: true
+            }
+          },
           author: {
             select: {
               name: true,

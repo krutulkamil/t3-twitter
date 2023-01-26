@@ -3,12 +3,8 @@ import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
-import { RouterOutputs } from "../utils/api";
+import { api, RouterOutputs } from "../utils/api";
 import { AiFillHeart } from "react-icons/ai";
-
-interface TweetProps {
-  tweet: RouterOutputs["tweet"]["timeline"]["tweets"][number];
-}
 
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
@@ -31,7 +27,17 @@ dayjs.updateLocale("en", {
   }
 });
 
+interface TweetProps {
+  tweet: RouterOutputs["tweet"]["timeline"]["tweets"][number];
+}
+
 const Tweet: FunctionComponent<TweetProps> = ({ tweet }): JSX.Element => {
+
+  const likeMutation = api.tweet.like.useMutation().mutateAsync;
+  const unlikeMutation = api.tweet.unlike.useMutation().mutateAsync;
+
+  const hasLiked = tweet.likes.length > 0;
+
   return (
     <div className="mb-4 border-b-2 border-gray-500">
       <div className="flex items-center p-2">
@@ -59,9 +65,19 @@ const Tweet: FunctionComponent<TweetProps> = ({ tweet }): JSX.Element => {
 
       <div className="mt-4 flex p-2 items-center">
         <AiFillHeart
-          color="red"
+          color={hasLiked ? "red" : "gray"}
           size="1.5rem"
-          onClick={() => console.log("like tweet")}
+          onClick={async () => {
+            if (hasLiked) {
+              await unlikeMutation({
+                tweetId: tweet.id
+              });
+              return;
+            }
+            await likeMutation({
+              tweetId: tweet.id
+            });
+          }}
         />
         <span className="text-sm text-gray-500">{10}</span>
       </div>
