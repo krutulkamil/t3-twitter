@@ -6,7 +6,6 @@ interface ContainerProps {
 }
 
 const Container: FunctionComponent<ContainerProps> = ({ children, classNames = "" }): JSX.Element => {
-
   return (
     <div className={`m-auto max-w-xl bg-slate-200 ${classNames}`}>
       {children}
