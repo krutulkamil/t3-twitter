@@ -34,7 +34,7 @@ const CreateTweet: FunctionComponent = (): JSX.Element => {
     <>
       {error && JSON.stringify(error)}
       <form
-        onSubmit={void handleSubmit}
+        onSubmit={handleSubmit}
         className="w-full flex flex-col border-2 p-4 rounded-md mb-4"
       >
         <textarea
