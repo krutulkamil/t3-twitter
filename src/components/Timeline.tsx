@@ -10,6 +10,7 @@ const Timeline: FunctionComponent = (): JSX.Element => {
 
   return (
     <div>
+      {data?.nextCursor}
       <CreateTweet />
       <div className="border-l-2 border-r-2 border-t-2 border-gray-500">
         {data?.tweets.map((tweet) => <Tweet key={tweet.id} tweet={tweet} />)}
