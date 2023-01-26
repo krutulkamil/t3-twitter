@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
 import { RouterOutputs } from "../utils/api";
+import { AiFillHeart } from "react-icons/ai";
 
 interface TweetProps {
   tweet: RouterOutputs["tweet"]["timeline"]["tweets"][number];
@@ -33,7 +34,7 @@ dayjs.updateLocale("en", {
 const Tweet: FunctionComponent<TweetProps> = ({ tweet }): JSX.Element => {
   return (
     <div className="mb-4 border-b-2 border-gray-500">
-      <div className="flex p-2">
+      <div className="flex items-center p-2">
         {tweet.author && tweet.author.image && (
           <Image
             src={tweet.author.image}
@@ -54,6 +55,15 @@ const Tweet: FunctionComponent<TweetProps> = ({ tweet }): JSX.Element => {
           <div>{tweet.text}</div>
         </div>
 
+      </div>
+
+      <div className="mt-4 flex p-2 items-center">
+        <AiFillHeart
+          color="red"
+          size="1.5rem"
+          onClick={() => console.log("like tweet")}
+        />
+        <span className="text-sm text-gray-500">{10}</span>
       </div>
     </div>
   );
