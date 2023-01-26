@@ -10,7 +10,7 @@ const LIMIT = 10;
 
 const Timeline: FunctionComponent = (): JSX.Element => {
   const scrollPosition = useScrollPosition();
-  const debouncedScrollPosition = useDebounce<number>(scrollPosition, 400);
+  const debouncedScrollPosition = useDebounce<number>(scrollPosition, 200);
 
   const { data, hasNextPage, fetchNextPage, isFetching } = api.tweet.timeline.useInfiniteQuery({
     limit: LIMIT
