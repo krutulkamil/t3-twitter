@@ -92,7 +92,7 @@ const Tweet: FunctionComponent<TweetProps> = ({ tweet, client }): JSX.Element =>
             });
           }}
         />
-        <span className="text-sm text-gray-500">{10}</span>
+        <span className="text-sm text-gray-500">{tweet._count.likes}</span>
       </div>
     </div>
   );
