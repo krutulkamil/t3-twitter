@@ -3,12 +3,13 @@ import CreateTweet from "./CreateTweet";
 import Tweet from "./Tweet";
 import { api } from "../utils/api";
 import { useScrollPosition } from "../hooks/useScrollPosition";
+import { useDebounce } from "../hooks/useDebounce";
 
 const LIMIT = 10;
 
 const Timeline: FunctionComponent = (): JSX.Element => {
-
   const scrollPosition = useScrollPosition();
+  const debouncedScrollPosition = useDebounce<number>(scrollPosition, 400);
 
   const { data, hasNextPage, fetchNextPage, isFetching } = api.tweet.timeline.useInfiniteQuery({
     limit: LIMIT
