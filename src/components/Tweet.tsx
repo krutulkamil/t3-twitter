@@ -3,8 +3,10 @@ import Image from "next/image";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
+import { updateCache } from "../services/updateCache";
 import { api, RouterOutputs } from "../utils/api";
 import { AiFillHeart } from "react-icons/ai";
+import { QueryClient } from "@tanstack/query-core";
 
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
@@ -29,12 +31,22 @@ dayjs.updateLocale("en", {
 
 interface TweetProps {
   tweet: RouterOutputs["tweet"]["timeline"]["tweets"][number];
+  client: QueryClient;
 }
 
-const Tweet: FunctionComponent<TweetProps> = ({ tweet }): JSX.Element => {
+const Tweet: FunctionComponent<TweetProps> = ({ tweet, client }): JSX.Element => {
 
-  const likeMutation = api.tweet.like.useMutation().mutateAsync;
-  const unlikeMutation = api.tweet.unlike.useMutation().mutateAsync;
+  const likeMutation = api.tweet.like.useMutation({
+    onSuccess: (data, variables) => {
+      updateCache({ client, data, variables, action: "like" });
+    }
+  }).mutateAsync;
+
+  const unlikeMutation = api.tweet.unlike.useMutation({
+    onSuccess: (data, variables) => {
+      updateCache({ client, data, variables, action: "unlike" });
+    }
+  }).mutateAsync;
 
   const hasLiked = tweet.likes.length > 0;
 
@@ -66,6 +78,7 @@ const Tweet: FunctionComponent<TweetProps> = ({ tweet }): JSX.Element => {
       <div className="mt-4 flex p-2 items-center">
         <AiFillHeart
           color={hasLiked ? "red" : "gray"}
+          className="cursor-pointer"
           size="1.5rem"
           onClick={async () => {
             if (hasLiked) {

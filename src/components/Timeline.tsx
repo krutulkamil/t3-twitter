@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import CreateTweet from "./CreateTweet";
 import Tweet from "./Tweet";
 import { api } from "../utils/api";
@@ -11,6 +12,8 @@ const LIMIT = 10;
 const Timeline: FunctionComponent = (): JSX.Element => {
   const scrollPosition = useScrollPosition();
   const debouncedScrollPosition = useDebounce<number>(scrollPosition, 200);
+
+  const client = useQueryClient();
 
   const { data, hasNextPage, fetchNextPage, isFetching } = api.tweet.timeline.useInfiniteQuery({
     limit: LIMIT
@@ -30,7 +33,13 @@ const Timeline: FunctionComponent = (): JSX.Element => {
     <div>
       <CreateTweet />
       <div className="border-l-2 border-r-2 border-t-2 border-gray-500">
-        {tweets.map((tweet) => <Tweet key={tweet.id} tweet={tweet} />)}
+        {tweets.map((tweet) => (
+          <Tweet
+            key={tweet.id}
+            tweet={tweet}
+            client={client}
+          />
+        ))}
         {!hasNextPage && <p>No more items to load</p>}
       </div>
     </div>
