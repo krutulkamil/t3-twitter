@@ -50,6 +50,7 @@ model User {
   sessions      Session[]
   tweet         Tweet[]
   likes         Like[]
+  comments      Comment[]
 }
 
 model VerificationToken {
@@ -61,13 +62,14 @@ model VerificationToken {
 }
 
 model Tweet {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   text      String
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String   @db.ObjectId
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  String    @db.ObjectId
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   likes     Like[]
+  comments  Comment[]
 }
 
 model Like {
@@ -80,4 +82,18 @@ model Like {
   updatedAt DateTime @updatedAt
 
   @@unique([tweetId, userId])
+}
+
+model Comment {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  body      String
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  String    @db.ObjectId
+  tweet     Tweet     @relation(fields: [tweetId], references: [id])
+  tweetId   String    @db.ObjectId
+  children  Comment[] @relation("comment_children")
+  parent    Comment?  @relation("comment_children", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parentId  String?   @db.ObjectId
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
