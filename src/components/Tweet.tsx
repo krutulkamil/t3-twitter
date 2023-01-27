@@ -35,16 +35,19 @@ interface TweetProps {
 }
 
 const Tweet: FunctionComponent<TweetProps> = ({ tweet, client }): JSX.Element => {
+  const utils = api.useContext();
 
   const likeMutation = api.tweet.like.useMutation({
-    onSuccess: (data, variables) => {
+    onSuccess: async (data, variables) => {
       updateCache({ client, data, variables, action: "like" });
+      await utils.tweet.timeline.invalidate();
     }
   }).mutateAsync;
 
   const unlikeMutation = api.tweet.unlike.useMutation({
-    onSuccess: (data, variables) => {
+    onSuccess: async (data, variables) => {
       updateCache({ client, data, variables, action: "unlike" });
+      await utils.tweet.timeline.invalidate();
     }
   }).mutateAsync;
 

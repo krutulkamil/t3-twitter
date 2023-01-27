@@ -14,8 +14,14 @@ export const tweetSchema = object({
 const CreateTweet: FunctionComponent = (): JSX.Element => {
   const [text, setText] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const utils = api.useContext();
 
-  const { mutateAsync } = api.tweet.create.useMutation();
+  const { mutateAsync } = api.tweet.create.useMutation({
+    onSuccess: async () => {
+      setText("");
+      await utils.tweet.timeline.invalidate();
+    }
+  });
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
