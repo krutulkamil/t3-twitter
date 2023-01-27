@@ -1,10 +1,11 @@
 import type { FunctionComponent } from "react";
 import Image from "next/image";
+import Link from "next/link"
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
 import { updateCache } from "../services/updateCache";
-import { api, RouterOutputs } from "../utils/api";
+import { api, RouterInputs, RouterOutputs } from "../utils/api";
 import { AiFillHeart } from "react-icons/ai";
 import { QueryClient } from "@tanstack/query-core";
 
@@ -32,21 +33,22 @@ dayjs.updateLocale("en", {
 interface TweetProps {
   tweet: RouterOutputs["tweet"]["timeline"]["tweets"][number];
   client: QueryClient;
+  input: RouterInputs["tweet"]["timeline"];
 }
 
-const Tweet: FunctionComponent<TweetProps> = ({ tweet, client }): JSX.Element => {
+const Tweet: FunctionComponent<TweetProps> = ({ tweet, client, input }): JSX.Element => {
   const utils = api.useContext();
 
   const likeMutation = api.tweet.like.useMutation({
     onSuccess: async (data, variables) => {
-      updateCache({ client, data, variables, action: "like" });
+      updateCache({ client, data, variables, input, action: "like" });
       await utils.tweet.timeline.invalidate();
     }
   }).mutateAsync;
 
   const unlikeMutation = api.tweet.unlike.useMutation({
     onSuccess: async (data, variables) => {
-      updateCache({ client, data, variables, action: "unlike" });
+      updateCache({ client, data, variables, input, action: "unlike" });
       await utils.tweet.timeline.invalidate();
     }
   }).mutateAsync;
@@ -68,7 +70,11 @@ const Tweet: FunctionComponent<TweetProps> = ({ tweet, client }): JSX.Element =>
 
         <div className="ml-2">
           <div className="flex items-center">
-            <p className="font-bold">{tweet.author.name}</p>
+            <p className="font-bold">
+              <Link href={`/${tweet.author.name}`}>
+                {tweet.author.name}
+              </Link>
+            </p>
             <p className="pl-1 text-sm text-gray-500">
               - {dayjs(tweet.createdAt).fromNow()}</p>
           </div>

@@ -1,5 +1,5 @@
 import { InfiniteData, QueryClient } from "@tanstack/query-core";
-import { RouterOutputs } from "../utils/api";
+import { RouterInputs, RouterOutputs } from "../utils/api";
 
 interface UpdateCacheProps {
   client: QueryClient,
@@ -9,19 +9,18 @@ interface UpdateCacheProps {
   data: {
     userId: string;
   },
-  action: "like" | "unlike"
+  action: "like" | "unlike",
+  input: RouterInputs["tweet"]["timeline"]
 }
 
-export const updateCache = ({ client, variables, data, action }: UpdateCacheProps) => {
+export const updateCache = ({ client, variables, data, action, input }: UpdateCacheProps) => {
   client.setQueryData([
     [
       "tweet",
       "timeline"
     ],
     {
-      input: {
-        limit: 10
-      },
+      input,
       type: "infinite"
     }
   ], (oldData) => {
@@ -30,7 +29,7 @@ export const updateCache = ({ client, variables, data, action }: UpdateCacheProp
 
     const value = action === "like" ? 1 : -1;
 
-    const newTweets = newData.pages.map((page) => {
+    const newTweets = newData?.pages?.map((page) => {
       return {
         tweets: page.tweets.map((tweet) => {
           if (tweet.id === variables.tweetId) {
